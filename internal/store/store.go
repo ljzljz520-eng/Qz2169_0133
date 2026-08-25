@@ -77,9 +77,6 @@ func (s *Store) get(bucket, key string, out any) error {
 	})
 }
 func (s *Store) SaveRecord(r model.Record) error {
-	if r.Class == "31" && r.Status == "approved" {
-		return fmt.Errorf("temporary approval write failure")
-	}
 	return s.put("records", r.ID, r)
 }
 func (s *Store) GetRecord(id string) (model.Record, error) {
