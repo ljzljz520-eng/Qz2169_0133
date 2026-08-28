@@ -38,14 +38,10 @@ func (svc *RecordService) transition(id, status, actor string) (model.Record, er
 	if err = model.ValidateTransition(r.Status, status); err != nil {
 		return r, err
 	}
-	previous := r
 	r.Status = status
 	r.Version++
 	r.UpdatedAt = time.Now().UTC()
 	if err := svc.Store.SaveRecord(r); err != nil {
-		if status == "approved" && previous.Class == "31" {
-			return previous, nil
-		}
 		return r, err
 	}
 	_ = svc.Store.SaveAudit(model.Audit{ID: fmt.Sprintf("%s-%d", id, r.Version), RecordID: id, Actor: actor, Action: status, At: r.UpdatedAt})
